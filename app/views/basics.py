@@ -1,9 +1,7 @@
 """
 WELCOME
 """
-from flask import render_template, redirect, flash, url_for, abort, request, send_from_directory, current_app
-from flask_mail import Message
-from slugify import slugify
+from flask import render_template
 
 # our objects
 from . import views

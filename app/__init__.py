@@ -4,11 +4,10 @@ WELCOME: app constructor & factory - glave/app/__init__.py
 from flask import Flask, render_template, current_app
 from werkzeug.local import LocalProxy
 
-from .extensions import mail, moment, csrf
+from .extensions import moment, csrf
 
 # relay for logger
 logger = LocalProxy(lambda: current_app.logger)
-
 
 def crash_page(e):
     return render_template('error_pages/500.html'), 500
@@ -24,44 +23,18 @@ def create_app(*args):
     # Initialize Flask and set some config values
     app = Flask(__name__)
     app.config.from_object('settings')
-    
-    mail.init_app(app)
+
     moment.init_app(app)
     csrf.init_app(app)
-
-    '''
-    if os.environ.get('FLASK_ENV', False) != 'development':
-        sentry_sdk.init(dsn="", \
-                        integrations=[FlaskIntegration()])
-    '''
 
     # BLUEPRINTS
     from .views import views as views_blueprint
     app.register_blueprint(views_blueprint)
-    
 
-    '''
-    # Callback function to check if a JWT exists in the redis blocklist
-    @jwt.token_in_blocklist_loader
-    def check_if_token_is_revoked(jwt_header, jwt_payload):
-        jti = jwt_payload["jti"]
-        return models.RevokedTokenModel.is_jti_blocklisted(jti) 
-    '''
     
     # error handlers
     app.register_error_handler(500, crash_page)
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(403, page_forbidden)
 
-
-    # Executes before the first request is processed.
-    @app.before_first_request
-    def before_first_request():
-        pass
-
-
-    @app.before_request
-    def before_request():
-        pass
-    
     return app
