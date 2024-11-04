@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#ignore freeze-env
+freeze-env/
+#ignore freeze build
+app/build/
 # C extensions
 *.so
 
